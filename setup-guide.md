@@ -29,7 +29,8 @@
 |-------|-------------|------|----------|----------|-------|--------|
 
 **Tips:**
-- `status` column: type `active` to show, `inactive` to hide
+- `status` column for **Programs**: type `Open` to show, anything else (or `Closed`) to hide
+- `status` column for **Volunteering**: type `active` to show, `inactive` to hide
 - `image` column: paste the Google Drive shareable URL (see Step 1b)
 - `registerlink`: paste the external registration URL (for programs only)
 
@@ -112,7 +113,7 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/XXXXXX/exec";
 
 | title | description | date | location | duration | image | registerlink | status |
 |-------|-------------|------|----------|----------|-------|--------------|--------|
-| Morning Yoga | A rejuvenating yoga session... | May 10, 2025 | Isha Place, Budigere, Bangalore | 2 hours | https://drive.google.com/uc?id=YOUR_ID | https://bookmyshow.com/... | active |
+| Morning Yoga | A rejuvenating yoga session... | May 10, 2025 | Isha Place, Budigere, Bangalore | 2 hours | https://drive.google.com/uc?id=YOUR_ID | https://bookmyshow.com/... | Open |
 
 3. Go to your website URL → click Programs → your listing appears!
 
@@ -121,7 +122,8 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/XXXXXX/exec";
 ## How to Update Content Later
 
 - **Add a program/volunteering:** Add a new row in the Google Sheet → site updates instantly
-- **Hide an item:** Change `status` to `inactive`
+- **Hide a program:** Change `status` to `Closed` (or anything except `Open`)
+- **Hide a volunteering item:** Change `status` to `inactive`
 - **Update website design:** Edit the HTML/CSS files on GitHub
 
 ---
