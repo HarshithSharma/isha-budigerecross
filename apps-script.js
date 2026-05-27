@@ -1,5 +1,5 @@
 // =============================================
-// Isha Place, Vijayanagar — Google Apps Script
+// Isha Place, Budigere — Google Apps Script
 // Paste this entire file into:
 // Google Sheet → Extensions → Apps Script
 // Then deploy as Web App (see setup-guide.md)

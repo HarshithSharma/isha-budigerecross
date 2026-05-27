@@ -1,4 +1,4 @@
-# Isha Place – Vijayanagar (static site)
+# Isha Place – Budigere (static site)
 
 ## Run locally
 

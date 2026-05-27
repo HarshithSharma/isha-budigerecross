@@ -1,4 +1,4 @@
-# Setup Guide — Isha Place, Vijayanagar Website
+# Setup Guide — Isha Place, Budigere Website
 
 ## What you have
 - `index.html` — Home page  
@@ -14,7 +14,7 @@
 ## STEP 1 — Create Your Google Sheet
 
 1. Go to **sheets.google.com** → New spreadsheet
-2. Name it: `Isha Place, Vijayanagar`
+2. Name it: `Isha Place, Budigere`
 3. Create **3 tabs** (click + at bottom):
    - `Programs`
    - `Volunteering`
@@ -112,7 +112,7 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/XXXXXX/exec";
 
 | title | description | date | location | duration | image | registerlink | status |
 |-------|-------------|------|----------|----------|-------|--------------|--------|
-| Morning Yoga | A rejuvenating yoga session... | May 10, 2025 | Isha Place, Vijayanagar, Bangalore | 2 hours | https://drive.google.com/uc?id=YOUR_ID | https://bookmyshow.com/... | active |
+| Morning Yoga | A rejuvenating yoga session... | May 10, 2025 | Isha Place, Budigere, Bangalore | 2 hours | https://drive.google.com/uc?id=YOUR_ID | https://bookmyshow.com/... | active |
 
 3. Go to your website URL → click Programs → your listing appears!
 
