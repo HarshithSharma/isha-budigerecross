@@ -374,26 +374,11 @@
     let allPrograms = [];
     let activeFrequencyPill = 'all';
 
-    /** Match sheet dropdown "Open" / "Closed" (any case, trim, NBSP). */
-    function normalizeProgramStatusValue(raw) {
-      if (raw === undefined || raw === null) return '';
-      return String(raw)
-        .replace(/\u00a0/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .toLowerCase();
-    }
-
-    /** Hide closed rows if API still returns them (e.g. old deployment) or status lives under another JSON key. */
-    function programListingStatusIsOpen(item) {
-      const keys = ['status', 'program status', 'listing status'];
-      for (let k = 0; k < keys.length; k++) {
-        const v = item[keys[k]];
-        if (v !== undefined && v !== null && String(v).replace(/\u00a0/g, ' ').trim() !== '') {
-          return normalizeProgramStatusValue(v) === 'open';
-        }
-      }
-      return true;
+    /** Check if item status is "Open" (case-insensitive). Empty/missing = hidden. */
+    function isItemVisible(item) {
+      const v = item['status'];
+      if (v === undefined || v === null || String(v).trim() === '') return false;
+      return String(v).trim().toLowerCase() === 'open';
     }
 
     function canonicalFrequency(program) {
@@ -444,7 +429,7 @@
       try {
         const res = await fetch(`${APPS_SCRIPT_URL}?type=programs`);
         const data = await res.json();
-        allPrograms = (data.items || []).filter(programListingStatusIsOpen);
+        allPrograms = (data.items || []).filter(isItemVisible);
         populateProgramSelect();
         setFrequencyFilter('all');
       } catch (err) {
@@ -475,7 +460,7 @@
         let imgHtml = `<div class="no-img">🌿</div>`;
         if (item.image) {
           const src = fixDriveUrl(item.image);
-          imgHtml = `<img src="${src}" alt="${item.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'no-img\\'>🌿</div>'"/>`;
+          imgHtml = `<img src="${src}" alt="${item.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div class=\\'no-img\\'>🌿</div>'"/>`;
         }
 
         card.innerHTML = `
@@ -597,13 +582,10 @@
     }
 
     function fixDriveUrl(url) {
-      // Use Drive's thumbnail endpoint: it redirects to lh3.googleusercontent.com, which allows
-      // embedding. uc?export=view redirects to usercontent.google.com with CORP: same-site, which
-      // often breaks <img> from external sites (403 / blocked load).
       if (!url || typeof url !== 'string') return url;
       const u = url.trim();
-      if (/^https:\/\/lh\d*\.googleusercontent\.com\//i.test(u)) return u;
       if (/thumbnail\?.*\bid=/.test(u)) return u;
+      // Extract file ID from any Google Drive / googleusercontent URL and use thumbnail endpoint
       const match = u.match(/\/d\/([a-zA-Z0-9_-]+)/);
       if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
       const ucMatch = u.match(/[?&]id=([a-zA-Z0-9_-]+)/);

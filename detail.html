@@ -170,7 +170,6 @@
     function fixDriveUrl(url) {
       if (!url || typeof url !== 'string') return url;
       const u = url.trim();
-      if (/^https:\/\/lh\d*\.googleusercontent\.com\//i.test(u)) return u;
       if (/thumbnail\?.*\bid=/.test(u)) return u;
       const match = u.match(/\/d\/([a-zA-Z0-9_-]+)/);
       if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
@@ -243,7 +242,7 @@
         const content = document.getElementById('detail-content');
         content.innerHTML = `
           ${data.item.image
-            ? `<div class="detail-image"><img src="${fixDriveUrl(data.item.image)}" alt="${data.item.title}"/></div>`
+            ? `<div class="detail-image"><img src="${fixDriveUrl(data.item.image)}" alt="${data.item.title}" referrerpolicy="no-referrer"/></div>`
             : ''}
           <div class="detail-meta">
             ${datetimeBlock}

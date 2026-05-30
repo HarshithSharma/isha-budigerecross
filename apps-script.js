@@ -70,10 +70,11 @@ function doPost(e) {
   }
 }
 
-// ---- Programs sheet: status column may be "Status", "Program status", etc. ----
-// Sheet data validation (dropdown) values like "Open" / "Closed" are compared as "open" / "closed".
+// ---- Unified status check for both Programs and Volunteering ----
+// Only a column named "status" is recognized. Value must be "Open" (case-insensitive) to show.
+// Empty / missing status is treated as visible.
 
-function normalizeProgramStatusValue_(raw) {
+function normalizeStatus_(raw) {
   if (raw === undefined || raw === null) return "";
   return String(raw)
     .replace(/\u00a0/g, " ")
@@ -82,20 +83,18 @@ function normalizeProgramStatusValue_(raw) {
     .toLowerCase();
 }
 
-function getProgramsStatusColumnIndex_(headers) {
-  const ordered = ["status", "program status", "listing status"];
-  for (let o = 0; o < ordered.length; o++) {
-    const ix = headers.indexOf(ordered[o]);
-    if (ix >= 0) return ix;
-  }
-  return -1;
+/** Returns normalized status string, or null if no "status" column exists. */
+function getRowStatus_(headers, row) {
+  const ix = headers.indexOf("status");
+  if (ix < 0) return null;
+  return normalizeStatus_(row[ix]);
 }
 
-/** Normalized status text, or null if Programs sheet has no recognized status column. */
-function getProgramsSheetRowStatus_(headers, row) {
-  const ix = getProgramsStatusColumnIndex_(headers);
-  if (ix < 0) return null;
-  return normalizeProgramStatusValue_(row[ix]);
+/** True if the row should be shown (status must be "open", case-insensitive). */
+function isRowVisible_(headers, row) {
+  const st = getRowStatus_(headers, row);
+  if (st === null) return false;
+  return st === "open";
 }
 
 // ---- GET ALL ITEMS FROM A SHEET ----
@@ -111,13 +110,7 @@ function getAllItems(sheetName) {
 
   for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
-    if (sheetName === PROGRAMS_SHEET) {
-      const stPrograms = getProgramsSheetRowStatus_(headers, row);
-      if (stPrograms !== null && stPrograms !== "open") continue;
-    } else {
-      const statusIdx = headers.indexOf("status");
-      if (statusIdx >= 0 && row[statusIdx].toString().toLowerCase() === "inactive") continue;
-    }
+    if (!isRowVisible_(headers, row)) continue;
     if (!row[0]) continue;
 
     const item = {};
@@ -149,10 +142,7 @@ function getSingleItem(sheetName, id) {
   });
   item.id = id;
 
-  if (sheetName === PROGRAMS_SHEET) {
-    const st = getProgramsSheetRowStatus_(headers, row);
-    if (st !== null && st !== "open") return { item: null };
-  }
+  if (!isRowVisible_(headers, row)) return { item: null };
 
   return { item };
 }
