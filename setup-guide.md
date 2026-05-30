@@ -31,21 +31,30 @@
 **Tips:**
 - `status` column for **Programs**: type `Open` to show, anything else (or `Closed`) to hide
 - `status` column for **Volunteering**: type `active` to show, `inactive` to hide
-- `image` column: paste the Google Drive shareable URL (see Step 1b)
+- `image` column: paste a direct image URL (e.g., from Googleusercontent)
 - `registerlink`: paste the external registration URL (for programs only)
 
 ---
 
-## STEP 1b — Upload Images to Google Drive
+## STEP 1b — Adding Images
 
-1. Create a folder in Google Drive called `Centre Images`
-2. Upload your images there
-3. Right-click any image → **Share** → **Anyone with the link can view** → Copy link
-4. The link looks like: `https://drive.google.com/file/d/FILEID/view`
-5. Convert it to a direct image URL:
-   - Take the `FILEID` from the link
-   - Use this format: `https://drive.google.com/uc?id=FILEID`
-   - Paste **that** URL into the image column
+You have two options for adding images:
+
+### Option 1: Paste Image URLs (Recommended)
+
+1. Host your image somewhere (Google Drive, image hosting service, etc.)
+2. Get a publicly accessible URL (e.g., `https://lh3.googleusercontent.com/...`)
+3. Paste the URL directly into the `image` column as text
+
+**This is the easiest and most reliable method.**
+
+### Option 2: Insert Images Over Cells
+
+1. Go to **Insert** → **Image** → **Image over cells**
+2. Upload your image
+3. Resize and position it to cover the cell in the `image` column
+
+**Important:** Use "Image over cells" NOT "Image in cell". Images inserted "in cell" will show as "CellImage" text and won't work.
 
 ---
 
@@ -113,7 +122,7 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/XXXXXX/exec";
 
 | title | description | date | location | duration | image | registerlink | status |
 |-------|-------------|------|----------|----------|-------|--------------|--------|
-| Morning Yoga | A rejuvenating yoga session... | May 10, 2025 | Isha Place, Budigere, Bangalore | 2 hours | https://drive.google.com/uc?id=YOUR_ID | https://bookmyshow.com/... | Open |
+| Morning Yoga | A rejuvenating yoga session... | May 10, 2025 | Isha Place, Budigere, Bangalore | 2 hours | https://lh3.googleusercontent.com/d/YOUR_ID | https://bookmyshow.com/... | Open |
 
 3. Go to your website URL → click Programs → your listing appears!
 
@@ -135,8 +144,9 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/XXXXXX/exec";
 - Make sure you deployed with "Anyone" access
 
 **Images not showing:**
-- Make sure you used the `https://drive.google.com/uc?id=FILEID` format
-- Check that the Drive file is shared as "Anyone with link"
+- Make sure the image URL is publicly accessible
+- Test the URL by pasting it directly into your browser
+- Verify the URL starts with `https://`
 
 **Form submissions not saving:**
 - Re-deploy your Apps Script (Deploy → Manage deployments → Edit → Deploy)

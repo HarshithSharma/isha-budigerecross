@@ -168,14 +168,30 @@
     }
 
     function fixDriveUrl(url) {
+      // Convert Google Drive shareable links to direct image URLs
       if (!url || typeof url !== 'string') return url;
       const u = url.trim();
+      
+      // Handle lh3.googleusercontent.com/d/FILE_ID format (needs conversion)
+      const lh3Match = u.match(/https:\/\/lh\d*\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/);
+      if (lh3Match) return `https://drive.google.com/thumbnail?id=${lh3Match[1]}&sz=w1200`;
+      
+      // Already a valid googleusercontent URL (not /d/ format) - use as is
       if (/^https:\/\/lh\d*\.googleusercontent\.com\//i.test(u)) return u;
+      
+      // Already using thumbnail endpoint - use as is
       if (/thumbnail\?.*\bid=/.test(u)) return u;
+      
+      // Extract file ID from various Drive URL formats
+      // Format: https://drive.google.com/file/d/FILE_ID/view
       const match = u.match(/\/d\/([a-zA-Z0-9_-]+)/);
       if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
-      const ucMatch = u.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-      if (ucMatch) return `https://drive.google.com/thumbnail?id=${ucMatch[1]}&sz=w1200`;
+      
+      // Format: https://drive.google.com/open?id=FILE_ID
+      const openMatch = u.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (openMatch) return `https://drive.google.com/thumbnail?id=${openMatch[1]}&sz=w1200`;
+      
+      // If it's already a working URL (http/https), return as is
       return u;
     }
 

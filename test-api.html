@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #333; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; font-size: 16px; margin: 5px; }
+        button:hover { background: #45a049; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 4px; overflow-x: auto; }
+        .error { color: red; }
+        .success { color: green; }
+        .image-preview { max-width: 200px; margin: 10px 0; border: 2px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Test Tool</h1>
+        <p>This page tests your Google Apps Script API and shows you exactly what data is being returned.</p>
+        
+        <button onclick="testPrograms()">Test Programs API</button>
+        <button onclick="testVolunteering()">Test Volunteering API</button>
+        
+        <h2>Results:</h2>
+        <div id="results"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        function showResult(title, data, isError = false) {
+            const results = document.getElementById('results');
+            const className = isError ? 'error' : 'success';
+            
+            let html = `<h3 class="${className}">${title}</h3>`;
+            html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            
+            // If there are items with images, show them
+            if (data.items && Array.isArray(data.items)) {
+                html += '<h4>Images Found:</h4>';
+                data.items.forEach((item, idx) => {
+                    if (item.image) {
+                        html += `<div>
+                            <p><strong>Item ${idx + 1}: ${item.title || 'Untitled'}</strong></p>
+                            <p>Image URL: <code>${item.image}</code></p>
+                            <img src="${item.image}" class="image-preview" onerror="this.style.border='2px solid red'; this.alt='Failed to load';" />
+                        </div>`;
+                    } else {
+                        html += `<p>Item ${idx + 1}: ${item.title || 'Untitled'} - <em>No image</em></p>`;
+                    }
+                });
+            }
+            
+            results.innerHTML = html;
+        }
+
+        async function testPrograms() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Loading programs...</p>';
+            
+            try {
+                const url = `${APPS_SCRIPT_URL}?type=programs`;
+                console.log('Fetching:', url);
+                
+                const response = await fetch(url);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                showResult('✓ Programs API Success', data);
+            } catch (error) {
+                console.error('Error:', error);
+                showResult('✗ Programs API Error', {
+                    error: error.message,
+                    url: APPS_SCRIPT_URL,
+                    note: 'Check the console for more details'
+                }, true);
+            }
+        }
+
+        async function testVolunteering() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Loading volunteering...</p>';
+            
+            try {
+                const url = `${APPS_SCRIPT_URL}?type=volunteering`;
+                console.log('Fetching:', url);
+                
+                const response = await fetch(url);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                showResult('✓ Volunteering API Success', data);
+            } catch (error) {
+                console.error('Error:', error);
+                showResult('✗ Volunteering API Error', {
+                    error: error.message,
+                    url: APPS_SCRIPT_URL,
+                    note: 'Check the console for more details'
+                }, true);
+            }
+        }
+
+        // Show current config
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Apps Script URL:', APPS_SCRIPT_URL);
+        });
+    </script>
+</body>
+</html>
