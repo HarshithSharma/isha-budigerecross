@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test - Isha Budigere</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #c8a96e;
+            border-bottom: 2px solid #c8a96e;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #c8a96e;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .details {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        button {
+            background: #c8a96e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover {
+            background: #b39860;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 API Connection Test</h1>
+        
+        <div class="info">
+            <strong>📋 What this page does:</strong>
+            <p>This diagnostic tool tests your Google Apps Script connection and helps identify common issues.</p>
+        </div>
+
+        <div class="test-section">
+            <h3>Current Configuration</h3>
+            <div id="configStatus" class="status loading">Loading configuration...</div>
+            <div id="configDetails" class="details"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test 1: Fetch Programs Data</h3>
+            <button onclick="testPrograms()">Run Test</button>
+            <div id="programsStatus" class="status" style="display:none;"></div>
+            <div id="programsDetails" class="details" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test 2: Fetch Volunteering Data</h3>
+            <button onclick="testVolunteering()">Run Test</button>
+            <div id="volunteeringStatus" class="status" style="display:none;"></div>
+            <div id="volunteeringDetails" class="details" style="display:none;"></div>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Common Issues:</strong>
+            <ul>
+                <li><strong>CORS Error:</strong> Your Apps Script must be deployed with "Who has access: <strong>Anyone</strong>" (not "Anyone with Google account")</li>
+                <li><strong>404 Error:</strong> Check that the URL in <code>config.js</code> is correct and ends with <code>/exec</code></li>
+                <li><strong>401/403 Error:</strong> The script needs to be authorized and deployed with "Execute as: Me"</li>
+                <li><strong>Empty Response:</strong> Your Google Sheet tabs might not exist or have no data</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Show current configuration
+        window.addEventListener('DOMContentLoaded', () => {
+            const configStatus = document.getElementById('configStatus');
+            const configDetails = document.getElementById('configDetails');
+            
+            if (typeof APPS_SCRIPT_URL !== 'undefined' && APPS_SCRIPT_URL) {
+                configStatus.className = 'status success';
+                configStatus.textContent = '✅ Configuration file loaded successfully';
+                configDetails.innerHTML = `<strong>URL:</strong> ${APPS_SCRIPT_URL}<br><br>`;
+                
+                // Validate URL format
+                if (!APPS_SCRIPT_URL.includes('/exec')) {
+                    configDetails.innerHTML += `<span style="color: red;">⚠️ WARNING: URL should end with /exec (not /dev)</span><br>`;
+                }
+                if (!APPS_SCRIPT_URL.startsWith('https://script.google.com/macros/s/')) {
+                    configDetails.innerHTML += `<span style="color: red;">⚠️ WARNING: URL format doesn't look correct</span><br>`;
+                }
+            } else {
+                configStatus.className = 'status error';
+                configStatus.textContent = '❌ Configuration not found or invalid';
+                configDetails.textContent = 'Make sure config.js exists and defines APPS_SCRIPT_URL';
+            }
+        });
+
+        async function testPrograms() {
+            const statusEl = document.getElementById('programsStatus');
+            const detailsEl = document.getElementById('programsDetails');
+            
+            statusEl.style.display = 'block';
+            statusEl.className = 'status loading';
+            statusEl.textContent = '⏳ Testing programs endpoint...';
+            detailsEl.style.display = 'none';
+            
+            try {
+                const url = `${APPS_SCRIPT_URL}?type=programs`;
+                console.log('Fetching:', url);
+                
+                const response = await fetch(url);
+                console.log('Response:', response);
+                
+                const data = await response.json();
+                console.log('Data:', data);
+                
+                if (data.error) {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ API returned an error';
+                    detailsEl.textContent = JSON.stringify(data, null, 2);
+                    detailsEl.style.display = 'block';
+                } else if (data.items && Array.isArray(data.items)) {
+                    statusEl.className = 'status success';
+                    statusEl.textContent = `✅ Success! Fetched ${data.items.length} program(s)`;
+                    detailsEl.textContent = JSON.stringify(data, null, 2);
+                    detailsEl.style.display = 'block';
+                } else {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '⚠️ Unexpected response format';
+                    detailsEl.textContent = JSON.stringify(data, null, 2);
+                    detailsEl.style.display = 'block';
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Failed to connect';
+                detailsEl.innerHTML = `<strong>Error:</strong> ${error.message}<br><br>`;
+                
+                if (error.message.includes('CORS') || error.message.includes('fetch')) {
+                    detailsEl.innerHTML += `<strong>Common causes:</strong><br>
+                    1. Apps Script not deployed with "Anyone" access<br>
+                    2. URL is incorrect or points to /dev instead of /exec<br>
+                    3. Apps Script authorization is required<br><br>
+                    <strong>Fix:</strong> Go to your Apps Script → Deploy → Manage deployments → Edit → Make sure "Who has access" is set to "Anyone" → Create new deployment`;
+                } else if (error.message.includes('404')) {
+                    detailsEl.innerHTML += `<strong>This means:</strong> The URL is incorrect or the deployment doesn't exist<br>
+                    <strong>Fix:</strong> Check the URL in config.js matches your Apps Script deployment URL`;
+                }
+                
+                detailsEl.style.display = 'block';
+            }
+        }
+
+        async function testVolunteering() {
+            const statusEl = document.getElementById('volunteeringStatus');
+            const detailsEl = document.getElementById('volunteeringDetails');
+            
+            statusEl.style.display = 'block';
+            statusEl.className = 'status loading';
+            statusEl.textContent = '⏳ Testing volunteering endpoint...';
+            detailsEl.style.display = 'none';
+            
+            try {
+                const url = `${APPS_SCRIPT_URL}?type=volunteering`;
+                console.log('Fetching:', url);
+                
+                const response = await fetch(url);
+                console.log('Response:', response);
+                
+                const data = await response.json();
+                console.log('Data:', data);
+                
+                if (data.error) {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ API returned an error';
+                    detailsEl.textContent = JSON.stringify(data, null, 2);
+                    detailsEl.style.display = 'block';
+                } else if (data.items && Array.isArray(data.items)) {
+                    statusEl.className = 'status success';
+                    statusEl.textContent = `✅ Success! Fetched ${data.items.length} volunteering item(s)`;
+                    detailsEl.textContent = JSON.stringify(data, null, 2);
+                    detailsEl.style.display = 'block';
+                } else {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '⚠️ Unexpected response format';
+                    detailsEl.textContent = JSON.stringify(data, null, 2);
+                    detailsEl.style.display = 'block';
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Failed to connect';
+                detailsEl.innerHTML = `<strong>Error:</strong> ${error.message}<br><br>`;
+                
+                if (error.message.includes('CORS') || error.message.includes('fetch')) {
+                    detailsEl.innerHTML += `<strong>Common causes:</strong><br>
+                    1. Apps Script not deployed with "Anyone" access<br>
+                    2. URL is incorrect or points to /dev instead of /exec<br>
+                    3. Apps Script authorization is required<br><br>
+                    <strong>Fix:</strong> Go to your Apps Script → Deploy → Manage deployments → Edit → Make sure "Who has access" is set to "Anyone" → Create new deployment`;
+                } else if (error.message.includes('404')) {
+                    detailsEl.innerHTML += `<strong>This means:</strong> The URL is incorrect or the deployment doesn't exist<br>
+                    <strong>Fix:</strong> Check the URL in config.js matches your Apps Script deployment URL`;
+                }
+                
+                detailsEl.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
