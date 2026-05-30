@@ -285,6 +285,24 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+/**
+ * Insert an informational banner just before a grid element.
+ * Removes any existing banner for that grid first.
+ * @param {string} gridId
+ * @param {string} message
+ */
+function showBanner(gridId, message) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  const existing = document.getElementById(gridId + '-banner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = gridId + '-banner';
+  banner.className = 'data-banner';
+  banner.textContent = message;
+  grid.parentNode.insertBefore(banner, grid);
+}
+
 /* =========================================================
    DATA FETCHING
    ========================================================= */
@@ -296,12 +314,8 @@ function escapeHtml(str) {
  */
 async function fetchFromSheet(type) {
   if (CONFIG.useDemoData || !CONFIG.appsScriptUrl || CONFIG.appsScriptUrl === 'YOUR_APPS_SCRIPT_WEB_APP_URL') {
-    // Return demo data after a simulated delay
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(type === 'programs' ? DEMO_PROGRAMS : DEMO_VOLUNTEER_OPPORTUNITIES);
-      }, 600);
-    });
+    // Return demo data immediately (no delay)
+    return type === 'programs' ? DEMO_PROGRAMS : DEMO_VOLUNTEER_OPPORTUNITIES;
   }
 
   const url = CONFIG.appsScriptUrl + '?type=' + type;
@@ -309,7 +323,15 @@ async function fetchFromSheet(type) {
   if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
   const data = await response.json();
   if (data.error) throw new Error(data.error);
-  return Array.isArray(data.records) ? data.records : [];
+  const records = Array.isArray(data.records) ? data.records : [];
+  // If Google Sheets returned no rows yet, fall back to demo data so the site
+  // always has visible content; also signal the caller via the _isDemo flag.
+  if (records.length === 0) {
+    const fallback = type === 'programs' ? DEMO_PROGRAMS : DEMO_VOLUNTEER_OPPORTUNITIES;
+    fallback._isEmpty = true;
+    return fallback;
+  }
+  return records;
 }
 
 /**
@@ -417,15 +439,26 @@ async function loadPrograms() {
     </div>`;
 
   try {
-    allPrograms = await fetchFromSheet('programs');
+    const programs = await fetchFromSheet('programs');
+    allPrograms = programs;
+
+    if (programs._isEmpty) {
+      showBanner('programs-grid',
+        '📋 Your Google Sheet\'s Programs tab appears to be empty. ' +
+        'Showing sample programs below. Add rows to your sheet to replace them.');
+    }
+
     populateProgramDropdown(allPrograms);
     renderPrograms();
   } catch (err) {
     console.error('Failed to load programs:', err);
-    grid.innerHTML = `
-      <div class="loading-state">
-        <p>⚠️ Could not load programs. Please try again later.</p>
-      </div>`;
+    // Fall back to demo data so the section is never blank
+    allPrograms = DEMO_PROGRAMS;
+    populateProgramDropdown(allPrograms);
+    renderPrograms();
+    showBanner('programs-grid',
+      '⚠️ Could not reach Google Sheets (' + err.message + '). ' +
+      'Showing sample programs. Check your Apps Script URL in app.js.');
   }
 }
 
@@ -480,17 +513,28 @@ async function loadVolunteerOpportunities() {
   try {
     const opps = await fetchFromSheet('volunteers');
     grid.innerHTML = '';
-    if (opps.length === 0) {
-      grid.innerHTML = '<p style="color:var(--color-text-muted)">No opportunities listed currently. Check back soon!</p>';
-    } else {
-      const fragment = document.createDocumentFragment();
-      opps.forEach((o) => fragment.appendChild(buildVolunteerCard(o)));
-      grid.appendChild(fragment);
+
+    if (opps._isEmpty) {
+      showBanner('volunteer-grid',
+        '📋 Your Google Sheet\'s Volunteers tab appears to be empty. ' +
+        'Showing sample opportunities below. Add rows to your sheet to replace them.');
     }
+
+    const fragment = document.createDocumentFragment();
+    opps.forEach((o) => fragment.appendChild(buildVolunteerCard(o)));
+    grid.appendChild(fragment);
     grid.setAttribute('aria-busy', 'false');
   } catch (err) {
     console.error('Failed to load volunteer opportunities:', err);
-    grid.innerHTML = `<p style="color:var(--color-text-muted)">⚠️ Could not load opportunities. Please try again later.</p>`;
+    // Fall back to demo data so the section is never blank
+    grid.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+    DEMO_VOLUNTEER_OPPORTUNITIES.forEach((o) => fragment.appendChild(buildVolunteerCard(o)));
+    grid.appendChild(fragment);
+    grid.setAttribute('aria-busy', 'false');
+    showBanner('volunteer-grid',
+      '⚠️ Could not reach Google Sheets (' + err.message + '). ' +
+      'Showing sample opportunities. Check your Apps Script URL in app.js.');
   }
 }
 
