@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
   <title>Home – Isha Place, Budigere</title>
+  <link rel="icon" type="image/png" href="assets/logo.png"/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -54,93 +55,165 @@
     .mobile-menu li { padding: 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
     .mobile-menu a { display: block; padding: 14px 0; color: var(--cream); font-size: 0.88rem; letter-spacing: 0.1em; text-transform: uppercase; }
 
-    /* HERO */
+    /* HERO — full-screen with background image */
     .hero {
-      position: relative; height: 100vh; min-height: 600px;
+      position: relative; min-height: 100vh;
       display: flex; align-items: center; justify-content: center; text-align: center;
-      background: var(--dark);
-      overflow: hidden;
+      background: var(--dark); overflow: hidden;
     }
-    /* CSS gradient background as fallback — no external image dependency */
     .hero-bg {
       position: absolute; inset: 0;
-      background: 
+      background:
+        linear-gradient(180deg, rgba(28,28,30,0.4) 0%, rgba(28,28,30,0.7) 100%),
+        url('assets/hero-bg.jpg') center/cover no-repeat;
+    }
+    /* Fallback gradient if no image */
+    .hero-bg-fallback {
+      position: absolute; inset: 0;
+      background:
         radial-gradient(ellipse at 20% 50%, rgba(200,169,110,0.12) 0%, transparent 60%),
         radial-gradient(ellipse at 80% 20%, rgba(200,169,110,0.08) 0%, transparent 50%),
         linear-gradient(160deg, #1a1410 0%, #1c1c1e 40%, #12100e 100%);
     }
-    /* Decorative geometric pattern */
     .hero-pattern {
-      position: absolute; inset: 0; opacity: 0.04;
-      background-image: 
-        repeating-linear-gradient(45deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%);
+      position: absolute; inset: 0; opacity: 0.03;
+      background-image: repeating-linear-gradient(45deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%);
       background-size: 40px 40px;
-    }
-    .hero-glow {
-      position: absolute; bottom: -100px; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 300px;
-      background: radial-gradient(ellipse, rgba(200,169,110,0.15) 0%, transparent 70%);
-      pointer-events: none;
     }
     .hero-content { position: relative; z-index: 1; padding: 24px; max-width: 760px; }
     .hero-eyebrow {
       display: inline-block;
-      font-size: 0.72rem; letter-spacing: 0.35em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 48px;
-      border-top: 1px solid rgba(200,169,110,0.4);
-      border-bottom: 1px solid rgba(200,169,110,0.4);
-      padding: 6px 20px;
+      font-size: 0.7rem; letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 28px;
+      border: 1px solid rgba(200,169,110,0.4);
+      padding: 6px 18px; border-radius: 2px;
     }
-    /* Sadhguru quote */
-    .hero-quote {
-      font-family: var(--font-serif); font-size: clamp(1.05rem, 2.5vw, 1.4rem);
-      font-style: italic; font-weight: 300;
-      color: rgba(245,240,232,0.82); line-height: 1.6;
-      max-width: 620px; margin: 0 auto 12px;
-      border-left: 2px solid var(--gold);
-      padding-left: 20px; text-align: left;
+    .hero-title {
+      font-family: var(--font-serif); font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 300; color: var(--white); line-height: 1.2; margin-bottom: 16px;
     }
-    .hero-quote-attr {
-      text-align: left; padding-left: 20px;
-      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--gold-dark); margin-bottom: 48px;
+    .hero-sub {
+      font-size: 1rem; color: rgba(245,240,232,0.7); margin-bottom: 40px;
+      max-width: 520px; margin-left: auto; margin-right: auto;
     }
-    .hero-buttons {
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-    }
-    .hero-buttons-row {
-      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
-    }
-    .hero-query-btn { border: 1px solid rgba(200,169,110,0.45); color: rgba(245,240,232,0.95); background: rgba(255,255,255,0.06); }
-    .hero-query-btn:hover { background: rgba(200,169,110,0.12); border-color: var(--gold); color: var(--gold-light); transform: translateY(-2px); }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
     .btn {
-      display: inline-block; padding: 13px 36px;
-      font-family: var(--font-sans); font-size: 0.8rem; font-weight: 500;
+      display: inline-block; padding: 14px 36px;
+      font-family: var(--font-sans); font-size: 0.78rem; font-weight: 500;
       letter-spacing: 0.14em; text-transform: uppercase;
-      border-radius: 3px; transition: all var(--transition); cursor: pointer;
+      border-radius: 3px; transition: all var(--transition); cursor: pointer; border: none;
     }
     .btn-gold { background: var(--gold); color: var(--dark); }
     .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); }
     .btn-outline { border: 1px solid rgba(200,169,110,0.6); color: var(--gold); background: transparent; }
     .btn-outline:hover { background: rgba(200,169,110,0.1); border-color: var(--gold); }
+    .btn-white-outline { border: 1px solid rgba(255,255,255,0.3); color: rgba(245,240,232,0.9); background: transparent; }
+    .btn-white-outline:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.6); }
 
-    /* ABOUT STRIP */
-    .about-strip {
+    /* HIGHLIGHTS STRIP */
+    .highlights {
+      background: var(--dark); padding: 0; position: relative; z-index: 2;
+      margin-top: -1px;
+    }
+    .highlights-inner {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid rgba(200,169,110,0.2);
+    }
+    .highlight-item {
+      text-align: center; padding: 36px 16px;
+      border-right: 1px solid rgba(200,169,110,0.1);
+    }
+    .highlight-item:last-child { border-right: none; }
+    .highlight-number {
+      font-family: var(--font-serif); font-size: 2.4rem; font-weight: 300;
+      color: var(--gold); line-height: 1; margin-bottom: 6px;
+    }
+    .highlight-label {
+      font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(245,240,232,0.5);
+    }
+
+    /* QUOTE SECTION */
+    .quote-section {
       background: var(--white); padding: 72px 0;
       border-bottom: 1px solid var(--cream-2);
     }
-    .about-inner { text-align: center; max-width: 700px; margin: 0 auto; }
+    .quote-inner {
+      max-width: 700px; margin: 0 auto; text-align: center;
+    }
+    .quote-icon {
+      font-size: 2.5rem; color: var(--gold); margin-bottom: 20px; opacity: 0.6;
+    }
+    .quote-text {
+      font-family: var(--font-serif); font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+      font-style: italic; font-weight: 300;
+      color: var(--dark); line-height: 1.7; margin-bottom: 16px;
+    }
+    .quote-attr {
+      font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold-dark);
+    }
+
+    /* ABOUT SECTION */
+    .about {
+      padding: 80px 0; background: var(--cream);
+    }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    }
+    .about-content {}
     .section-label {
       display: block; font-size: 0.7rem; letter-spacing: 0.28em;
       text-transform: uppercase; color: var(--gold-dark); margin-bottom: 16px; font-weight: 500;
     }
-    .about-inner h2 {
-      font-family: var(--font-serif); font-size: clamp(1.8rem, 4vw, 2.8rem);
+    .about-content h2 {
+      font-family: var(--font-serif); font-size: clamp(1.8rem, 3.5vw, 2.6rem);
       font-weight: 400; margin-bottom: 20px; line-height: 1.25;
     }
-    .about-inner p { color: var(--text-mid); font-size: 0.97rem; }
+    .about-content p { color: var(--text-mid); font-size: 0.95rem; margin-bottom: 14px; }
+    .about-image {
+      border-radius: 6px; overflow: hidden; aspect-ratio: 4/3;
+      background: var(--dark-2);
+    }
+    .about-image img { width: 100%; height: 100%; object-fit: cover; }
+    .about-image-placeholder {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; opacity: 0.3; color: var(--gold);
+    }
 
-    /* EXPLORE CARDS */
+    /* WHAT WE OFFER — 3 columns */
+    .offerings {
+      padding: 80px 0; background: var(--white);
+      border-top: 1px solid var(--cream-2); border-bottom: 1px solid var(--cream-2);
+    }
+    .offerings-header { text-align: center; margin-bottom: 48px; }
+    .offerings-header h2 {
+      font-family: var(--font-serif); font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 400; margin-bottom: 10px;
+    }
+    .offerings-header p { color: var(--text-mid); font-size: 0.92rem; max-width: 500px; margin: 0 auto; }
+    .offerings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+    .offering-card {
+      background: var(--cream); border-radius: 8px; overflow: hidden;
+      text-align: center; transition: all var(--transition);
+      border: 1px solid transparent;
+    }
+    .offering-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.08); }
+    .offering-img {
+      width: 100%; aspect-ratio: 4/3; overflow: hidden; background: var(--dark-2);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .offering-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .offering-card:hover .offering-img img { transform: scale(1.04); }
+    .offering-img .fallback-icon { font-size: 3rem; opacity: 0.4; }
+    .offering-card-body { padding: 32px 28px 36px; }
+    .offering-card-body h3 {
+      font-family: var(--font-serif); font-size: 1.8rem; font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .offering-card-body p { font-size: 0.95rem; color: var(--text-mid); line-height: 1.7; }
+
+    /* EXPLORE CARDS — Programs & Volunteering */
     .explore { padding: 80px 0; background: var(--cream); }
     .explore-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 48px; }
     .explore-card {
@@ -151,19 +224,60 @@
     }
     .explore-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); border-color: var(--gold); }
     .explore-card-img {
-      height: 200px; background: var(--dark);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3.5rem; position: relative; overflow: hidden;
+      height: 220px; background: var(--dark);
+      position: relative; overflow: hidden;
     }
+    .explore-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .explore-card:hover .explore-card-img img { transform: scale(1.04); }
     .explore-card-img::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(28,28,30,0.5) 0%, transparent 60%);
+      background: linear-gradient(to top, rgba(28,28,30,0.4) 0%, transparent 50%);
     }
     .explore-card-body { padding: 28px 32px 32px; }
-    .explore-card-body h3 { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; margin-bottom: 10px; }
-    .explore-card-body p { font-size: 0.88rem; color: var(--text-mid); margin-bottom: 24px; line-height: 1.7; }
-    .card-cta { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-dark); font-weight: 500; }
+    .explore-card-body h3 { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; }
+    .explore-card-body p { font-size: 0.86rem; color: var(--text-mid); margin-bottom: 20px; line-height: 1.7; }
+    .card-cta { font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-dark); font-weight: 500; }
     .explore-card:hover .card-cta { color: var(--gold); }
+
+    /* VOLUNTEERING CTA BANNER */
+    .volunteer-cta {
+      position: relative; padding: 88px 0; overflow: hidden;
+      background: var(--dark);
+    }
+    .volunteer-cta-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(135deg, rgba(28,28,30,0.85) 0%, rgba(28,28,30,0.6) 100%),
+        url('assets/volunteer-cta.jpg') center/cover no-repeat;
+    }
+    .volunteer-cta-content {
+      position: relative; z-index: 1; text-align: center; max-width: 600px; margin: 0 auto;
+    }
+    .volunteer-cta-content h2 {
+      font-family: var(--font-serif); font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 400; color: var(--white); margin-bottom: 16px; line-height: 1.3;
+    }
+    .volunteer-cta-content p {
+      color: rgba(245,240,232,0.7); font-size: 0.94rem; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* HOW TO REACH */
+    .reach-section { padding: 72px 0; background: var(--white); border-top: 1px solid var(--cream-2); }
+    .reach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .reach-info h2 {
+      font-family: var(--font-serif); font-size: 1.8rem; font-weight: 400; margin-bottom: 24px;
+    }
+    .reach-detail { margin-bottom: 20px; }
+    .reach-detail h4 {
+      font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold-dark); margin-bottom: 6px; font-weight: 500;
+    }
+    .reach-detail p { font-size: 0.92rem; color: var(--text-mid); line-height: 1.6; }
+    .reach-map {
+      border-radius: 6px; overflow: hidden; aspect-ratio: 4/3;
+      background: var(--cream-2); border: 1px solid var(--cream-2);
+    }
+    .reach-map iframe { width: 100%; height: 100%; border: 0; }
 
     /* QUERY MODAL */
     .modal-overlay {
@@ -210,8 +324,7 @@
     .query-modal .submit-btn:hover { background: var(--gold-light); }
     .query-modal .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .query-err {
-      display: none;
-      background: #fff3f3; border: 1px solid #ffcccc; color: #c0392b;
+      display: none; background: #fff3f3; border: 1px solid #ffcccc; color: #c0392b;
       padding: 10px 12px; border-radius: 3px; font-size: 0.82rem; margin-bottom: 14px;
     }
     .query-success { display: none; text-align: center; padding: 20px 8px 8px; }
@@ -221,7 +334,7 @@
 
     /* FOOTER */
     .footer { background: var(--dark); padding: 56px 0 0; color: rgba(245,240,232,0.7); }
-    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(200,169,110,0.15); }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(200,169,110,0.15); }
     .footer p { font-size: 0.86rem; line-height: 1.9; }
     .footer h5 { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; font-weight: 500; }
     .footer ul li { margin-bottom: 8px; }
@@ -230,15 +343,20 @@
     .footer-bottom { text-align: center; padding: 18px; font-size: 0.75rem; color: rgba(245,240,232,0.3); }
 
     /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 36px; }
+      .offerings-grid { grid-template-columns: 1fr; }
+      .reach-grid { grid-template-columns: 1fr; }
+    }
     @media (max-width: 700px) {
       .nav-links { display: none; }
       .nav-toggle { display: block; }
+      .highlights-inner { grid-template-columns: repeat(2, 1fr); }
+      .highlight-item:nth-child(2) { border-right: none; }
       .explore-grid { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-      .hero-buttons-row { flex-direction: column; align-items: center; width: 100%; }
-      .hero-buttons-row .btn { width: 100%; max-width: 320px; text-align: center; }
-      .hero-query-btn { max-width: 320px; width: 100%; }
-      .hero-quote { font-size: 1rem; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .hero-buttons .btn { width: 100%; max-width: 300px; text-align: center; }
     }
   </style>
 </head>
@@ -266,56 +384,154 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg"></div>
+    <!-- Replace hero-bg-fallback with hero-bg once you have assets/hero-bg.jpg -->
+    <div class="hero-bg-fallback"></div>
     <div class="hero-pattern"></div>
-    <div class="hero-glow"></div>
     <div class="hero-content">
-      <blockquote class="hero-quote">
-        "If tears of joy, tears of love, tears of ecstasy have not washed your cheeks, you are yet to experience life."
-      </blockquote>
-      <p class="hero-quote-attr">— Sadhguru</p>
+      <span class="hero-eyebrow">Isha Place, Budigere</span>
+      <h1 class="hero-title">A Space for<br/>Inner Wellbeing</h1>
+      <p class="hero-sub">Yoga, meditation &amp; inner transformation programs in Bengaluru East. Open to all — beginners and experienced practitioners alike.</p>
       <div class="hero-buttons">
-        <div class="hero-buttons-row">
-          <a href="programs.html" class="btn btn-gold">Explore Programs at Budigere</a>
-          <a href="volunteering.html" class="btn btn-outline">Volunteering Opportunities</a>
-        </div>
-        <button type="button" class="btn hero-query-btn" onclick="openQueryModal()">Submit a Query</button>
+        <a href="programs.html" class="btn btn-gold">Explore Programs</a>
+        <a href="volunteering.html" class="btn btn-outline">Volunteer With Us</a>
+        <button type="button" class="btn btn-white-outline" onclick="openQueryModal()">Submit a Query</button>
       </div>
     </div>
   </section>
 
-  <!-- ABOUT -->
-  <section class="about-strip">
+  <!-- HIGHLIGHTS STRIP -->
+  <section class="highlights">
     <div class="container">
-      <div class="about-inner">
-        <span class="section-label">About This Centre</span>
-        <h2>A Space for Inner Wellbeing</h2>
-        <p>A local Isha Foundation centre offering yoga, meditation, and inner wellbeing programs. Whether you are a beginner or a seasoned practitioner, this is a space for you to grow, transform, and contribute.</p>
+      <div class="highlights-inner">
+        <div class="highlight-item">
+          <div class="highlight-number">10+</div>
+          <div class="highlight-label">Programs Offered</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-number">100+</div>
+          <div class="highlight-label">Participants</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-number">50+</div>
+          <div class="highlight-label">Active Volunteers</div>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-number">7</div>
+          <div class="highlight-label">Days a Week</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- EXPLORE -->
+  <!-- SADHGURU QUOTE -->
+  <section class="quote-section">
+    <div class="container">
+      <div class="quote-inner">
+        <div class="quote-icon">❝</div>
+        <p class="quote-text">"If you want to know the joy of activity, first you must know the joy of stillness."</p>
+        <span class="quote-attr">— Sadhguru</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WE OFFER -->
+  <section class="offerings">
+    <div class="container">
+      <div class="offerings-header">
+        <span class="section-label">Technologies for Wellbeing</span>
+        <h2>What We Offer</h2>
+        <p>Simple yet powerful practices rooted in the yogic sciences, offered in a supportive setting.</p>
+      </div>
+      <div class="offerings-grid">
+        <div class="offering-card">
+          <div class="offering-img">
+            <img src="assets/Hatha Yoga.png" alt="Hatha Yoga" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+            <span class="fallback-icon" style="display:none">🧘</span>
+          </div>
+          <div class="offering-card-body">
+            <h3>Hatha Yoga</h3>
+            <p>Classical yoga practices including Surya Shakti, Angamardana, and Yogasanas — designed to bring the body to peak physical fitness and stillness.</p>
+          </div>
+        </div>
+        <div class="offering-card">
+          <div class="offering-img">
+            <img src="assets/IE-Home.png" alt="Inner Engineering" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+            <span class="fallback-icon" style="display:none">🪷</span>
+          </div>
+          <div class="offering-card-body">
+            <h3>Inner Engineering</h3>
+            <p>A comprehensive program for inner transformation, offering tools to engineer your own inner wellbeing. Includes Shambhavi Mahamudra Kriya.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPLORE — Programs & Volunteering Cards -->
   <section class="explore">
     <div class="container">
-      <span class="section-label" style="text-align:center;display:block">What We Offer</span>
+      <span class="section-label" style="text-align:center;display:block">Explore</span>
       <div class="explore-grid">
         <a href="programs.html" class="explore-card">
-          <div class="explore-card-img"><img src="assets/Upcoming programs-home.png" alt="Upcoming Programs" style="width:100%;height:100%;object-fit:cover;object-position:top;"/></div>
+          <div class="explore-card-img"><img src="assets/Upcoming programs-home.png" alt="Upcoming Programs" style="object-position:top;"/></div>
           <div class="explore-card-body">
             <h3>Upcoming Programs</h3>
-            <p>Explore upcoming programs, inner engineering programs, hatha yoga programs, and more.</p>
+            <p>Browse upcoming yoga programs, Inner Engineering sessions, Hatha Yoga intensives, and more at the Budigere centre.</p>
             <span class="card-cta">View All Programs →</span>
           </div>
         </a>
         <a href="volunteering.html" class="explore-card">
-          <div class="explore-card-img"><img src="assets/voulnteering-home.png" alt="Volunteering Opportunities" style="width:100%;height:100%;object-fit:cover;"/></div>
+          <div class="explore-card-img"><img src="assets/voulnteering-home.png" alt="Volunteering Opportunities"/></div>
           <div class="explore-card-body">
             <h3>Volunteering Opportunities</h3>
-            <p>Volunteering is a powerful way of giving. Be part of the Isha volunteer Sangha and contribute your time, energy, and skills to something larger than yourself.</p>
+            <p>Volunteering is a powerful way of giving. Be part of the Isha volunteer Sangha and contribute your time, energy, and skills.</p>
             <span class="card-cta">View Opportunities →</span>
           </div>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOLUNTEERING CTA BANNER -->
+  <section class="volunteer-cta">
+    <div class="volunteer-cta-bg"></div>
+    <div class="container">
+      <div class="volunteer-cta-content">
+        <h2>Be Part of Something<br/>Larger Than Yourself</h2>
+        <p>In every aspect of life, we can be a volunteer just by living willingly. Through this willingness, life becomes full of joy and fulfilment.</p>
+        <a href="volunteering.html" class="btn btn-gold">Get Involved</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW TO REACH -->
+  <section class="reach-section">
+    <div class="container">
+      <div class="reach-grid">
+        <div class="reach-info">
+          <span class="section-label">Visit Us</span>
+          <h2>How to Reach</h2>
+          <div class="reach-detail">
+            <h4>Address</h4>
+            <p>Isha Place, Budigere<br/>Bengaluru East<br/>Bengaluru – 560049</p>
+          </div>
+          <div class="reach-detail">
+            <h4>Centre Timings</h4>
+            <p>Monday – Sunday<br/>10:00 AM – 8:00 PM</p>
+          </div>
+          <div class="reach-detail">
+            <h4>Contact</h4>
+            <p>📞 +91 80957 63111</p>
+          </div>
+          <div class="reach-detail">
+            <h4>Nearest Landmarks</h4>
+            <p>Near Budigere Cross, off Old Madras Road. Well connected by BMTC buses and easily accessible from Whitefield, KR Puram, and Hoskote.</p>
+          </div>
+        </div>
+        <div class="reach-map">
+          <!-- Replace with your actual Google Maps embed URL -->
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.5!2d77.72!3d13.01!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sBudigere%2C+Bengaluru!5e0!3m2!1sen!2sin!4v1700000000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
       </div>
     </div>
   </section>
@@ -325,6 +541,7 @@
     <div class="query-modal">
       <button type="button" class="modal-close" onclick="closeQueryModal()" aria-label="Close">✕</button>
       <h2 id="queryModalTitle">Submit a Query</h2>
+      <p class="query-lead">Have a question? Leave your details and we'll get in touch.</p>
 
       <div class="query-err" id="homeQueryErr">Please fill in all required fields.</div>
 
@@ -351,7 +568,7 @@
         <div class="query-success" id="homeQuerySuccess">
           <div class="success-icon">🙏</div>
           <h3>Thank you</h3>
-          <p>We’ve received your query and will get in touch with you shortly.</p>
+          <p>We've received your query and will get in touch with you shortly.</p>
         </div>
       </form>
     </div>
@@ -362,8 +579,8 @@
     <div class="container">
       <div class="footer-grid">
         <div>
-          <h5>Address</h5>
-          <p>Budigere,<br/>Bengaluru East,<br/>Bengaluru – 560049</p>
+          <h5>Isha Place, Budigere</h5>
+          <p>A local Isha Foundation centre offering yoga, meditation, and inner wellbeing programs for the community.</p>
         </div>
         <div>
           <h5>Navigate</h5>
@@ -371,13 +588,6 @@
             <li><a href="programs.html">Programs</a></li>
             <li><a href="volunteering.html">Volunteering</a></li>
           </ul>
-        </div>
-        <div>
-          <h5>Contact</h5>
-          <p>📞 +91 80957 63111</p>
-          <br/>
-          <h5>Hours</h5>
-          <p>Mon – Sun<br/>10:00 AM – 8:00 PM</p>
         </div>
       </div>
       <div class="footer-bottom">
@@ -453,7 +663,6 @@
         });
         document.getElementById('homeQueryFields').style.display = 'none';
         document.getElementById('homeQuerySuccess').style.display = 'block';
-        document.getElementById('homeQueryErr').style.display = 'none';
       } catch (e) {
         err.textContent = 'Something went wrong. Please try again.';
         err.style.display = 'block';
@@ -462,6 +671,5 @@
       }
     }
   </script>
-
 </body>
 </html>
