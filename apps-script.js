@@ -98,6 +98,26 @@ function getProgramsSheetRowStatus_(headers, row) {
   return normalizeProgramStatusValue_(row[ix]);
 }
 
+// ---- EXTRACT IMAGES FROM SHEET ----
+function extractImagesFromSheet_(sheet) {
+  const imageMap = {};
+  try {
+    const images = sheet.getImages();
+    images.forEach((image) => {
+      const row = image.getRow();
+      const col = image.getColumn();
+      const url = image.getUrl();
+      if (url && row && col) {
+        if (!imageMap[row]) imageMap[row] = {};
+        imageMap[row][col] = url;
+      }
+    });
+  } catch (e) {
+    Logger.log("Error extracting images: " + e.message);
+  }
+  return imageMap;
+}
+
 // ---- GET ALL ITEMS FROM A SHEET ----
 function getAllItems(sheetName) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
@@ -107,6 +127,8 @@ function getAllItems(sheetName) {
   if (rows.length < 2) return { items: [] };
 
   const headers = rows[0].map((h) => h.toString().trim().toLowerCase());
+  const imageColIdx = headers.indexOf("image");
+  const imageMap = extractImagesFromSheet_(sheet);
   const items = [];
 
   for (let i = 1; i < rows.length; i++) {
@@ -124,6 +146,16 @@ function getAllItems(sheetName) {
     headers.forEach((h, idx) => {
       item[h] = row[idx].toString().trim();
     });
+    
+    // If image column is empty but there's an embedded image in that cell, use it
+    const actualRow = i + 1; // Sheet rows are 1-indexed
+    if (imageColIdx >= 0 && !item.image && imageMap[actualRow]) {
+      const actualCol = imageColIdx + 1; // Columns are 1-indexed
+      if (imageMap[actualRow][actualCol]) {
+        item.image = imageMap[actualRow][actualCol];
+      }
+    }
+    
     item.id = i.toString();
     items.push(item);
   }
@@ -147,6 +179,18 @@ function getSingleItem(sheetName, id) {
   headers.forEach((h, idx) => {
     item[h] = row[idx].toString().trim();
   });
+  
+  // Check for embedded image if image column is empty
+  const imageColIdx = headers.indexOf("image");
+  if (imageColIdx >= 0 && !item.image) {
+    const imageMap = extractImagesFromSheet_(sheet);
+    const actualRow = rowIndex + 1; // Sheet rows are 1-indexed
+    const actualCol = imageColIdx + 1; // Columns are 1-indexed
+    if (imageMap[actualRow] && imageMap[actualRow][actualCol]) {
+      item.image = imageMap[actualRow][actualCol];
+    }
+  }
+  
   item.id = id;
 
   if (sheetName === PROGRAMS_SHEET) {

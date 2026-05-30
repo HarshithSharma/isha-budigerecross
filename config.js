@@ -3,4 +3,4 @@
 // after deploying (see setup-guide.md for how)
 // =============================================
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVYAZj5w1xribKO0_qts1FGM1K6zWFoCv5ZNrIG3JItTU-tv5_FvhPbQZaFx5OP8Lx/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHVa1JBDxSSE0jB15wyad_n6JgYKotXZ8NwMecrM3Vx1i4Tzk9IrXjj6povhMBHyT0/exec";
