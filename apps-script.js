@@ -33,6 +33,8 @@ function doGet(e) {
     result = { error: "Unknown type" };
   }
 
+  // Return JSON response
+  // Note: CORS is handled automatically by Google Apps Script when deployed with "Anyone" access
   return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(
     ContentService.MimeType.JSON
   );

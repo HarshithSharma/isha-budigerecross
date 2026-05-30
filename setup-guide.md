@@ -62,12 +62,14 @@
 2. Click the gear icon ⚙️ next to "Type" → select **Web app**
 3. Fill in:
    - Description: `Centre Website`
-   - Execute as: **Me**
-   - Who has access: **Anyone**
+   - Execute as: **Me** (your email)
+   - Who has access: **Anyone** ⚠️ **IMPORTANT: Must be "Anyone", not "Anyone with Google account"**
 4. Click **Deploy**
 5. Click **Authorize access** → Choose your Google account → Allow
 6. **Copy the Web App URL** — it looks like:
    `https://script.google.com/macros/s/XXXXXXXXX/exec`
+   
+   ⚠️ **CRITICAL**: The URL must end with `/exec` (not `/dev`) for the website to access it
 
 ---
 
@@ -130,16 +132,22 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/XXXXXX/exec";
 
 ## Troubleshooting
 
-**"Could not load programs" error:**
-- Check that your Apps Script URL is correctly pasted in `config.js`
-- Make sure you deployed with "Anyone" access
+### 🔍 Use the Diagnostic Tool
+Open `test-api.html` in your browser to test your Google Apps Script connection and get specific error messages.
+
+**"Could not load programs" error / CORS error / Blocked by CORS policy:**
+- ✅ Check that your Apps Script URL is correctly pasted in `config.js`
+- ✅ **CRITICAL**: Make sure you deployed with "Who has access: **Anyone**" (NOT "Anyone with Google account")
+- ✅ Verify the URL ends with `/exec` (not `/dev`)
+- ✅ After changing deployment settings, you must create a **New deployment** (not just re-save)
+- ✅ Clear your browser cache and try again (Ctrl+Shift+R or Cmd+Shift+R)
 
 **Images not showing:**
 - Make sure you used the `https://drive.google.com/uc?id=FILEID` format
 - Check that the Drive file is shared as "Anyone with link"
 
 **Form submissions not saving:**
-- Re-deploy your Apps Script (Deploy → Manage deployments → Edit → Deploy)
+- Re-deploy your Apps Script (Deploy → Manage deployments → Edit → New Version)
 - Make sure you authorized the script
 
 ---
